@@ -1,12 +1,16 @@
 {
-    "dependencies": {
-        "mongoose": "^8.4.4",
-        "dotenv": "^16.0.3",
-        "ts-node-dev": "^2.0.0"
-    },
-    "scripts": {
-        "start": "bun run src/server.ts",
-        "dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
-        "clean": "rm -rf dist && echo 'Done.'"
-    }
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.4",
+    "ts-node-dev": "^2.0.0"
+  },
+  "scripts": {
+    "start": "bun run src/server.ts",
+    "dev": "npx ts-node-dev --respawn --transpile-only src/server.ts",
+    "clean": "rm -rf dist && echo 'Done.'"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
+  }
 }
