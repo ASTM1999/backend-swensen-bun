@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import express from 'express';
 import productRouter from './routes/productRoutes'
+import userRouter from './routes/userRoutes'
 
 dotenv.config();
 
@@ -18,11 +19,14 @@ mongoose.connect(mongoUri, {
     })
     .catch(err => {
         console.error('Failed to connect to MongoDB', err);
+        process.exit(1); // Exit the process with failure
     });
 
 const app = express();
 app.use(express.json());
 app.use('/api/products', productRouter);
+app.use('/api/users', userRouter);
+
 
 const server = createServer(app);
 
