@@ -1,13 +1,14 @@
 import { Router } from "express"
 import * as userController from '../controllers/userController'
+import { validateUser } from "../middleware/validate";
 
 const router = Router();
 
-router.post('/', userController.createUser)
+router.post('/', validateUser, userController.createUser)
 router.get('/', userController.getAllUser)
 router.get('/:id', userController.getUserById)
-router.put('/:id', userController.updateUser)
+router.put('/:id', validateUser, userController.updateUser)
 router.delete('/:id', userController.deleteUser)
-router.post('/login', userController.getAllUser)
+router.post('/login', userController.loginUser)
 
 export default router;

@@ -3,10 +3,10 @@ import Bun from 'bun';
 
 
 export const authenticateUser = async (email: string, password: string) => {
-    // console.log(password)
     const user = await Users.findOne({ email })
     // console.log(user)
-
+    // console.log(password)
+    // console.log(user.password)
     if (!user) {
         throw new Error('User not found')
     }
