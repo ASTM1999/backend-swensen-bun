@@ -10,8 +10,7 @@ import loginLimiter from "../middleware/loginLiniter";
 const router = Router();
 
 router.post('/', decryptInput, sanitizeUser, validateUser, userController.createUser);
-router.post('/login', loginLimiter, userController.loginUser);
-router.post('/login', decryptInput, userController.loginUser);
+router.post('/login', loginLimiter, decryptInput, userController.loginUser);
 router.get('/', authenticateJWT, userController.getAllUser);
 router.get('/:id', authenticateJWT, userController.getUserById);
 router.put('/:id', sanitizeUser, validateUser, authenticateJWT, userController.updateUser);

@@ -7,6 +7,7 @@ import productRouter from './routes/productRoutes'
 import userRouter from './routes/userRoutes'
 import cors from 'cors';
 import errorHandler from './middleware/errorMiddleware';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -30,8 +31,14 @@ const corsOptions = {
     origin: 'http://localhost:5173',
     optionSuccessStatus: 200
 }
+const rootLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 50, 
+    // message: 'Too many requests from this IP, please try again after 15 minutes'
+});
 
 const app = express();
+app.use('/', rootLimiter);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/api/products', productRouter);
