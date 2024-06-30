@@ -1,20 +1,27 @@
 import Users from "../models/userModel";
 import Bun from 'bun';
+import jwt from 'jsonwebtoken';
 
+const JWT_SECRET = process.env.JWT_SECRET || "default"
+// const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const authenticateUser = async (email: string, password: string) => {
-    const user = await Users.findOne({ email })
+    // console.log(email)
+    const user: any = await Users.findOne({ email })
     // console.log(user)
-    // console.log(password)
-    // console.log(user.password)
     if (!user) {
         throw new Error('User not found')
     }
     const isMatch = await Bun.password.verify(password, user.password);
+
     if (!isMatch) {
-        throw new Error('Invalid credentials')
+        // await user.incrementLoginAttempts();
+        // await delay(user.loginAttempts * 1000);
+        throw new Error('Unauthorized')
     }
-    return user
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' })
+    return { user, token }
 }
 
 export const createUser = async (data: any) => {
@@ -29,9 +36,14 @@ export const createUser = async (data: any) => {
         memoryCost: 4,
         timeCost: 5,
     })
+
+
     // console.log(hashedPassword)
     const user = new Users({ ...data, password: hashedPassword });
-    return await user.save();
+    await user.save();
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    return { user, token };
 }
 
 export const getAllUser = async () => {

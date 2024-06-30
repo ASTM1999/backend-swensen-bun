@@ -1,14 +1,20 @@
 import { Router } from "express"
 import * as userController from '../controllers/userController'
 import { validateUser } from "../middleware/validate";
+import { sanitizeUser } from "../middleware/sanitizeInput";
+import { authenticateJWT } from "../middleware/authenticateJWT";
+import { decryptInput } from "../middleware/decryption";
+import loginLimiter from "../middleware/loginLiniter";
+
 
 const router = Router();
 
-router.post('/', validateUser, userController.createUser)
-router.get('/', userController.getAllUser)
-router.get('/:id', userController.getUserById)
-router.put('/:id', validateUser, userController.updateUser)
-router.delete('/:id', userController.deleteUser)
-router.post('/login', userController.loginUser)
+router.post('/', decryptInput, sanitizeUser, validateUser, userController.createUser);
+router.post('/login', loginLimiter, userController.loginUser);
+router.post('/login', decryptInput, userController.loginUser);
+router.get('/', authenticateJWT, userController.getAllUser);
+router.get('/:id', authenticateJWT, userController.getUserById);
+router.put('/:id', sanitizeUser, validateUser, authenticateJWT, userController.updateUser);
+router.delete('/:id', authenticateJWT, userController.deleteUser);
 
 export default router;

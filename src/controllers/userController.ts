@@ -1,13 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
 import * as UserService from "../services/userService"
+import { encryptData } from '../utils/encryption';
+
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-    // console.log(req.body)
+    console.log("loginUser")
     try {
-        const login = await UserService.authenticateUser(req.body.email, req.body.password);
-        res.status(200).json({ message: "Login successful", user: login });
+        req.body.email = req.body.email?.toLowerCase();
+        // console.log(req.body.email)
+        const { user, token } = await UserService.authenticateUser(req.body.email, req.body.password);
+        // console.log("login")
+        const encryptedResponse = encryptData(JSON.stringify({ message: "Login successful", user, token }));
+        res.status(200).json({ data: encryptedResponse });
     } catch (error: any) {
-        if (error.message === 'User not found' || error.message === 'Invalid credentials')
+        if (error.message === 'User not found' || error.message === 'Unauthorized')
             res.status(401).json({ message: error.message });
         else {
             next(error);
@@ -16,12 +22,15 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body)
     try {
-        console.log("create User")
         console.log(req.body)
+        req.body.email = req.body.email?.toLowerCase();
+
         const user = await UserService.createUser(req.body);
         res.status(201).json(user)
     } catch (error: any) {
+        console.error("Error creating user:", error);
         next(error)
     }
 }

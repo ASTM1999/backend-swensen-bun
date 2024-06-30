@@ -32,6 +32,8 @@ export const getProductById = async (req: Request, res: Response) => {
     }
 };
 
+
+
 export const updateProduct = async (req: Request, res: Response) => {
     // console.log(req)
     try {
